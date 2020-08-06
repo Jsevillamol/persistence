@@ -8,7 +8,7 @@
 library(haven)
 library(lfe)
 library(dplyr)
-source("~/R/persistence/scripts/my_utils.R") # How do I make a relative import?
+source("scripts/my_utils.R") 
 
 # Variable selection ------------------------------------------------------
 
@@ -32,8 +32,8 @@ cluster = "region_name"
 
 # Data preparation --------------------------------------------------------
 
-my_data <- read_dta("R/persistence/datasets/4_schulz_et_al_data/EuropeanRegions.dta")
-country_data <- read_dta("R/persistence/datasets/4_schulz_et_al_data/alldata.dta")
+my_data <- read_dta("datasets/4_schulz_et_al_data/EuropeanRegions.dta")
+country_data <- read_dta("datasets/4_schulz_et_al_data/alldata.dta")
 country_data <- country_data %>% select(c(nu_lat, nu_lon, js_code))
 my_data <- merge(my_data, country_data, by.x="iso", by.y="js_code")
 
@@ -62,5 +62,3 @@ my_moran(
   my_data %>% pull("nu_lon"),
   my_data %>% pull("iso")
   )
-
-test <- aggregate(as.formula("cbind(nu_lat, nu_lon)~iso"), my_data, FUN=mean)

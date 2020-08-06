@@ -24,6 +24,7 @@ my_summary <- function(my_lm, outcome, exposure, clusters = "", expected_effect_
     s <- coef(summary(my_lm))[exposure, "Std. Error"]
   } else {
     s <- coef(summary(my_lm))[exposure, "Cluster s.e."]
+    n_clusters <- n_distinct(my_lm$clustervar[[clusters]])
   }
   p <- coef(summary(my_lm))[exposure, 'Pr(>|t|)']
   
@@ -43,7 +44,7 @@ my_summary <- function(my_lm, outcome, exposure, clusters = "", expected_effect_
   print(sprintf('outcome = %s', outcome))
   print(sprintf('exposure = %s', exposure))
   print(sprintf('n = %d', n))
-  #print(sprintf('n clusters = %d', n_clusters)) How do I programatically compute the number of clusters???
+  if (clusters != ""){print(sprintf('n clusters = %d', n_clusters))}
   print(sprintf('r = %.2f (%.2f)', r, s))
   print(sprintf('d = %.2f (%.2f)', cohen_d, cohen_ds))
   print(sprintf('beta = %.2f (%.2f)', r_adjusted, s_adjusted))
@@ -82,7 +83,7 @@ my_moran <- function(my_residuals,
   ww[which(!is.finite(ww))] <- 0
   
   # Compute Moran using ape
-  moran_out <- Moran.I(my_data$my_residual, ww) #, na.rm = TRUE)
+  moran_out <- Moran.I(my_data$my_residual, ww, na.rm = TRUE) # not sure if na.rm = TRUE is masking an error
   moran_out$z.value <- (moran_out$observed - moran_out$expected) / moran_out$sd
   
   # Print results
