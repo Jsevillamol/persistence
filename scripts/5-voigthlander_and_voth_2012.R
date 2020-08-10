@@ -4,7 +4,7 @@ library(lfe)
 source('scripts/my_utils.R')
 
 # Choose outcome, exposure and controls
-outcome = "pog20s" # pog20s NSDAP_1928 frac_deportations stuer syn33?
+outcome = "NSDAP_1928" # pog20s NSDAP_1928 frac_deportations stuer syn33?
 exposure = "pog1349"
 controls = 
   " + ln_pop"  %+% # pop33 is this right?
@@ -35,8 +35,8 @@ my_summary(my_felm, outcome, exposure, cluster, expected_effect_size = 0.13)
 
 # Compute spatial autocorrelation of residuals
 f <- outcome %+% " ~ " %+% exposure %+% controls
-my_lm <- lm(as.formula(f), )
+my_lm <- lm(as.formula(f), my_data, na.action = na.exclude)
 moran_out <- my_moran(
-  my_felm %>% residuals(), 
+  my_lm %>% residuals(), 
   my_data$Latitude, 
   my_data$Longitude)

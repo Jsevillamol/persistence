@@ -20,8 +20,8 @@ contemporary_country_controls = " + ln_income_m + ln_income2m"
 controls = 
   " + factor(statefip)"         %+%
   individual_controls           %+%
-  historical_country_controls   %+%
-  contemporary_country_controls
+  historical_country_controls   #%+%
+  #contemporary_country_controls
 
 clusters = "mbpl"
 
