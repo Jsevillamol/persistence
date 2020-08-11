@@ -11,7 +11,7 @@ source("scripts/my_utils.R")
 
 # Variable selection ------------------------------------------------------
 
-outcome = "empowerment" # totassoc_p sede_aido cheating_mat_area_rap gold_medal
+outcome = "empowerment"
 exposure = "libero_comune_allnord" # libero_comune_allnord libero_comune_principale signoria_indipendente_allnord 
 instrument = "bishopcity"
 

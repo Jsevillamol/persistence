@@ -5,6 +5,9 @@ source('scripts/my_utils.R')
 # Select outcome, response and controls
 outcome = "ln_maddison_pcgdp2000"
 exposure = "ln_export_area"
+instruments = 
+     "atlantic_distance_minimum + indian_distance_minimum" %+%
+  " + saharan_distance_minimum + red_sea_distance_minimum"
 
 colony_fixed_effects = 
   " + colony0 + colony1 + colony2" %+%
@@ -29,10 +32,30 @@ controls =
 # Load data
 my_data <- read_dta("datasets/1_nunn_2008_data/slave_trade_QJE.dta")
 
+## Add latitude and longitude
+country_centroids <- read.csv("datasets/country_centroids_az8.csv")
+country_centroids <- country_centroids %>% select(c(iso_a3,Latitude, Longitude))
+my_data <- merge(my_data, country_centroids, by.x = "isocode", by.y = "iso_a3")
+
 # Compute regression
-f = outcome %+% " ~ " %+% exposure %+% controls
+f1 = exposure %+% " ~ " %+% instruments %+% controls
+first_stage <- lm(as.formula(f1), my_data)
+exposure.hat <- first_stage$fitted.values
+
+f = outcome %+% " ~ " %+% "exposure.hat" %+% controls
 my_lm <- lm(as.formula(f),data=my_data)
-my_summary(my_lm, outcome, exposure, expected_effect_size = 0.13)
+
+# Print statistics
+my_summary(
+  my_lm, 
+  outcome, 
+  "exposure.hat", 
+  expected_effect_size = 0.13)
+
+## Print first stage F value
+## Print first stage F-stat 
+F1 <- summary(first_stage)$fstatistic["value"]
+print(sprintf('First stage F-stat = %.2f', F1))
 
 # Measure spatial autocorrelation of residuals
-my_moran(resid(my_lm), my_data$longitude, my_data$abs_latitude) # not quite right
+my_moran(resid(my_lm), my_data$Longitude, my_data$Latitude)

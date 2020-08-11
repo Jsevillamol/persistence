@@ -47,7 +47,7 @@ my_summary(my_felm,
            outcome, 
            exposure, 
            "ethnicity", # hack to make the script work with multiple controls
-           expected_effect_size = 0.1)
+           expected_effect_size = 0.13)
 
 # Compute the clustered Moran statistic
 f = outcome %+% " ~ " %+% exposure %+% controls

@@ -33,7 +33,12 @@ my_data <- merge(my_data, country_data, by.x="cntry", by.y="iso_a2", all.x=TRUE)
 # Regression
 f <- outcome %+% " ~ " %+% exposure %+% controls %+% " | 0 | 0 | " %+% cluster
 my_felm <- felm(as.formula(f), my_data, keepModel=TRUE)
-my_summary(my_felm, outcome, exposure, cluster)
+my_summary(
+  my_felm, 
+  outcome, 
+  exposure, 
+  cluster,
+  n_hypothesis = 4)
 
 # Compute spatial autocorrelation
 f2 <- outcome %+% " ~ " %+% exposure %+% controls

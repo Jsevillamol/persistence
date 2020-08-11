@@ -14,7 +14,11 @@ my_data <- read_dta("datasets/4_schulz_et_al_data/alldata.dta")
 # Regression
 f <- outcome %+% " ~ " %+% exposure %+% controls 
 my_lm <- lm(as.formula(f), my_data, na.action=na.exclude)
-my_summary(my_lm, outcome, exposure)
+my_summary(
+  my_lm, 
+  outcome, 
+  exposure,
+  n_hypothesis = 3)
 
 # Compute Moran
 my_moran(

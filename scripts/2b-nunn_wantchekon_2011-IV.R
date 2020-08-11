@@ -7,7 +7,7 @@ source('scripts/my_utils.R')
 ## List of target outcomes:
 ## trust_relatives trust_neighbors trust_local_council 
 ## intra_group_trust inter_group_trust 
-outcome = "trust_neighbors"
+outcome = "trust_relatives"
 exposure = "ln_export_area"
 instrument = "distsea"
 
@@ -54,7 +54,7 @@ my_summary(my_felm,
            outcome, 
            "exposure.hat", 
            "district", # hack to make the script work with multiple controls
-           expected_effect_size = 0.1)
+           expected_effect_size = 0.13)
 
 F1 <- summary(first_stage)$fstatistic["value"]
 print(sprintf('First stage F-stat = %.2f', F1))

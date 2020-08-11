@@ -40,7 +40,14 @@ my_data <- merge(x=my_data, y=gaz_counties_national, by.x="statefip", by.y="stat
 # Run regression
 f = outcome %+% " ~ " %+% exposure %+% controls %+% " | 0 | 0 | " %+% clusters 
 my_felm <- felm(as.formula(f), data=my_data, keepModel=TRUE)
-my_summary(my_felm,outcome, exposure, clusters, expected_effect_size = 0.03)
+
+my_summary(
+  my_felm,
+  outcome, 
+  exposure, 
+  clusters, 
+  expected_effect_size = 0.03, 
+  n_hypothesis = 5)
 
 # Compute spatial autocorrelation statistics
 f = outcome %+% " ~ " %+% exposure %+% controls

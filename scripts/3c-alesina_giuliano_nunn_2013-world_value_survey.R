@@ -3,7 +3,7 @@ library(dplyr)
 source('scripts/my_utils.R')
 
 # Choose outcome and controls
-outcome = "men_pol_leaders" # FLFP15_64 jobs_scarce men_pol_leaders
+outcome = "FLFP15_64" # FLFP15_64 jobs_scarce men_pol_leaders
 exposure = "plow"
 
 fixed_effects = "+ factor(countrycode)" ## regioncode countrycode continent
@@ -33,7 +33,7 @@ my_data <- merge(x = my_data, y = country_centroids, by.x = "countrycode", by.y 
 f = outcome %+% " ~ " %+% exposure %+% controls
 my_lm <- lm(as.formula(f), data=my_data, na.action=na.exclude)
 
-my_summary(my_lm, outcome, exposure)
+my_summary(my_lm, outcome, exposure, n_hypothesis = 5)
 
 # Compute clustered Moran
 my_moran(

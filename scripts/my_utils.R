@@ -10,10 +10,21 @@ library(ape)
 # Inline string concatenation
 `%+%` <- function(a, b) paste(a, b, sep="")
 
+# Error function and inverse
+erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
+erfinv <- function (x) qnorm((1 + x)/2)/sqrt(2)
+
 ################################################################################
 
 # Computing usual statistics
-my_summary <- function(my_lm, outcome, exposure, clusters = "", expected_effect_size=0.1){
+my_summary <- function(
+    my_lm, 
+    outcome, 
+    exposure, 
+    clusters = "", 
+    expected_effect_size=0.1,
+    n_hypothesis = 1
+  ){
   
   n <- nobs(my_lm)
   R2 <- summary(my_lm)$adj.r.squared
@@ -27,6 +38,14 @@ my_summary <- function(my_lm, outcome, exposure, clusters = "", expected_effect_
     n_clusters <- n_distinct(my_lm$clustervar[[clusters]])
   }
   p <- coef(summary(my_lm))[exposure, 'Pr(>|t|)']
+  
+  # Apply Sidak MHT correction
+  p <- 1-(1-p)^n_hypothesis
+  alpha <- erf(1/ sqrt(2))
+  alpha.p <- 1-(1-alpha)^n_hypothesis
+  s <- s * (sqrt(2) * erfinv(alpha.p))
+  
+  # Standardize regression coefficient
   
   sigma_x <- my_lm$model %>% pull(exposure) %>% sd()
   sigma_y <- my_lm$model %>% pull(outcome) %>% sd()
@@ -88,7 +107,7 @@ my_moran <- function(my_residuals,
   
   # Print results
   print(sprintf("Moran's Z = %.2f", moran_out$z.value))
-  print(sprintf("Moran's p = %.2f", moran_out$p.value))
+  print(sprintf("Moran's p = %.3f", moran_out$p.value))
 }
 
 ############################################

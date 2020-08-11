@@ -5,7 +5,7 @@ library(dplyr)
 source('scripts/my_utils.R')
 
 # Choose variable to run code on and controls
-outcome = "women_politics" ## flfp2000 female_ownership women_politics
+outcome = "flfp2000" ## flfp2000 female_ownership women_politics
 exposure = "plow"
 
 continent_fixed_effects = " + factor(continent)"
@@ -63,7 +63,8 @@ my_summary(
   my_lm,
   outcome, 
   exposure, 
-  expected_effect_size = 0.1
+  expected_effect_size = 0.1,
+  n_hypothesis = 5
 )
 
 # Compute Moran's statistic

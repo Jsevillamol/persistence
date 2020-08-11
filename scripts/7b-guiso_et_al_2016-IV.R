@@ -12,7 +12,7 @@ source("scripts/my_utils.R")
 
 # Variable selection ------------------------------------------------------
 
-outcome = "cheating_mat_area_rap" # totassoc_p sede_aido cheating_mat_area_rap gold_medal
+outcome = "gold_medal" # totassoc_p sede_aido cheating_mat_area_rap gold_medal
 exposure = "libero_comune_allnord" # libero_comune_allnord libero_comune_principale signoria_indipendente_allnord 
 instrument = "bishopcity"
 
@@ -55,9 +55,9 @@ my_lm <- lm(as.formula(f), my_data, na.action=na.exclude)
 ## Compute relevant statistics
 my_summary(my_lm, 
            outcome, 
-           "exposure.hat", 
-           #cluster, 
-           expected_effect_size = 0.1
+           "exposure.hat",
+           expected_effect_size = 0.1,
+           n_hypothesis = 4
 )
 
 print("First stage F-value = " %+% summary(first_stage)$fstatistic["value"])

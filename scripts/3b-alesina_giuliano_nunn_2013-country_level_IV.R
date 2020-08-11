@@ -67,7 +67,8 @@ my_summary(
   my_lm,
   outcome, 
   "exposure.hat", 
-  expected_effect_size = 0.1
+  expected_effect_size = 0.1,
+  n_hypothesis = 5
 )
 
 ## Print first stage F-stat 
