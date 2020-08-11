@@ -1,19 +1,36 @@
+# Visualize paper results 
+# by Pablo Villalobos
+
 data <- read.csv("datasets/results.csv")
 
+# Preliminary data manipulation
 data$min.span = data$Start.of.outcome-data$End.of.exposure
 data$max.span = data$End.of.outcome - data$Start.of.exposure
 data$center.span = (data$max.span + data$min.span)/2
+data$exposure.length = data$End.of.exposure - data$Start.of.exposure
 
 colors <- c("red", "green", "blue", "cyan", "magenta", "yellow", "black")
 
 
-dev.new(width=15, height=8)
-
+# Plot persistence span vs effect size
+png(file="figures/persistence_span_vs_effect_size.png", width=1000, height=600)
 plot(0,0,type="n",xlim=c(0,1.1*max(data$max.span)),ylim=c(0,1), ylab = '', xlab = '')
-
-segments(data$min.span, abs(data$Identified.persistent.effect), data$max.span, abs(data$Identified.persistent.effect), col=colors)
-
-segments(data$center.span, abs(data$Identified.persistent.effect)-data$Standard.error, data$center.span, abs(data$Identified.persistent.effect)+data$Standard.error, col=colors)
-
+segments(data$min.span, abs(data$Identified.persistent.effect), 
+         data$max.span, abs(data$Identified.persistent.effect), 
+         col=colors)
+segments(data$center.span, abs(data$Identified.persistent.effect)-data$Standard.error, 
+         data$center.span, abs(data$Identified.persistent.effect)+data$Standard.error, 
+         col=colors)
 title(xlab="Persistence span", ylab="Effect size")
 legend(x="topright", legend=data$Paper, fill=colors)
+dev.off()
+
+# Plot exposure length vs effect size
+png(file="figures/exposure_length_vs_effect_size.png", width=1000, height=600)
+plot(0,0,type="n",xlim=c(0,1.1*max(data$exposure.length)),ylim=c(0,1), ylab = '', xlab = '')
+segments(data$exposure.length, abs(data$Identified.persistent.effect)-data$Standard.error, 
+         data$exposure.length, abs(data$Identified.persistent.effect)+data$Standard.error, 
+         col=colors)
+title(xlab="Exposure length", ylab="Effect size")
+legend(x="topright", legend=data$Paper, fill=colors)
+dev.off()
