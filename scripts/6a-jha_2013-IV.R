@@ -2,6 +2,8 @@
 # Jha, 2013
 # Table 4, column 11
 
+source("scripts/my_utils.R")
+
 # Results
 outcome = "Any H-M Riot, 1850-1950?"
 exposure = "Medieval Overseas Port"
@@ -22,7 +24,7 @@ beta = r * sigma_x / sigma_y
 s_standard = s * sigma_x / sigma_y
 
 # p value
-z = r_adjusted / s_adjusted
+z = beta / s_standard
 p = pnorm(z)
 
 significance_level = 0.05

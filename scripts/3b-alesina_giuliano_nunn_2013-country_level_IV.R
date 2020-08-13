@@ -5,7 +5,7 @@ library(dplyr)
 source('scripts/my_utils.R')
 
 # Choose variable to run code on and controls
-outcome = "female_ownership" ## flfp2000 female_ownership women_politics
+outcome = "flfp2000" ## flfp2000 female_ownership women_politics
 exposure = "plow"
 
 continent_fixed_effects = " + factor(continent)"
