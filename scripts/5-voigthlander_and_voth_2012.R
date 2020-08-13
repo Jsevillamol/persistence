@@ -4,7 +4,7 @@ library(lfe)
 source('scripts/my_utils.R')
 
 # Choose outcome, exposure and controls
-outcome = "NSDAP_1928" # pog20s NSDAP_1928 frac_deportations stuer syn33?
+outcome = "pog20s" # pog20s NSDAP_1928 frac_deportations stuer syn33?
 exposure = "pog1349"
 controls = 
   " + ln_pop"  %+% # pop33 is this right?
@@ -31,7 +31,13 @@ my_data$frac_prot = my_data$c25prot / my_data$c25pop
 # Run regression
 f <- outcome %+% " ~ " %+% exposure %+% controls %+% " | 0 | 0 | " %+% cluster
 my_felm <- felm(as.formula(f), my_data, keepModel=TRUE)
-my_summary(my_felm, outcome, exposure, cluster, expected_effect_size = 0.13)
+my_summary(
+  my_felm, 
+  outcome, 
+  exposure, 
+  cluster, 
+  expected_effect_size = 0.13,
+  n_hypothesis = 6)
 
 # Compute spatial autocorrelation of residuals
 f <- outcome %+% " ~ " %+% exposure %+% controls

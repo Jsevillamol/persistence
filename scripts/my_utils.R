@@ -4,7 +4,6 @@
 
 library(ape)
 
-
 #########################################
 
 # Inline string concatenation
@@ -23,10 +22,12 @@ my_summary <- function(
     exposure, 
     clusters = "", 
     expected_effect_size=0.1,
-    n_hypothesis = 1
+    n_hypothesis = 1,
+    significance_level = 0.05
   ){
   
   n <- nobs(my_lm)
+  p <- coef(summary(my_lm))[exposure, 'Pr(>|t|)']
   R2 <- summary(my_lm)$adj.r.squared
   
   # Compute standardized regression coefficient
@@ -37,27 +38,38 @@ my_summary <- function(
     s <- coef(summary(my_lm))[exposure, "Cluster s.e."]
     n_clusters <- n_distinct(my_lm$clustervar[[clusters]])
   }
-  p <- coef(summary(my_lm))[exposure, 'Pr(>|t|)']
-  
-  # Apply Sidak MHT correction
-  p <- 1-(1-p)^n_hypothesis
-  alpha <- erf(1/ sqrt(2))
-  alpha.p <- 1-(1-alpha)^n_hypothesis
-  s <- s * (sqrt(2) * erfinv(alpha.p))
   
   # Standardize regression coefficient
-  
   sigma_x <- my_lm$model %>% pull(exposure) %>% sd()
   sigma_y <- my_lm$model %>% pull(outcome) %>% sd()
   
   cohen_d <- r / sigma_y
   cohen_ds <- s / sigma_y
   
-  r_adjusted <- r * sigma_x / sigma_y
-  s_adjusted <- s * sigma_x / sigma_y
+  beta <- r * sigma_x / sigma_y
+  s_standard <- s * sigma_x / sigma_y
+  
+  # Apply Sidak MHT correction
+  ## Compute critical number of hypothesis
+  if(p < significance_level){
+    critical_hypothesis_n <- floor(log(1 - significance_level) / log(1-p))
+  } else {
+    critical_hypothesis_n <- 0
+  }
+  
+  ## Adjust p value
+  p.adj <- 1-(1-p)^n_hypothesis
+  
+  ## Adjust standard error 
+  alpha <- erf(1/ sqrt(2))
+  alpha.p <- 1-(1-alpha)^n_hypothesis
+  s_adjusted <- s_standard * (sqrt(2) * erfinv(alpha.p))
   
   # Compute power, type-S error ratio and exaggeration ratio
-  retrodesign_out <- retrodesign(expected_effect_size, s_adjusted)
+  retrodesign_out <- retrodesign(
+    expected_effect_size, 
+    s_adjusted,
+    alpha=significance_level)
   
   # Print results
   print(sprintf('outcome = %s', outcome))
@@ -66,9 +78,13 @@ my_summary <- function(
   if (clusters != ""){print(sprintf('n clusters = %d', n_clusters))}
   print(sprintf('r = %.2f (%.2f)', r, s))
   print(sprintf('d = %.2f (%.2f)', cohen_d, cohen_ds))
-  print(sprintf('beta = %.2f (%.2f)', r_adjusted, s_adjusted))
-  print(sprintf('p = %.2f', p))
+  print(sprintf('beta = %.2f (%.2f) [%.2f]', beta, s_standard, s_adjusted))
+  print(sprintf('p = %.2e', p))
+  print(sprintf('# hypotheses tested = %i', n_hypothesis))
+  print(sprintf('Adjusted p = %.2e', p.adj))
+  print(sprintf('Critical hypothesis number = %.2e', critical_hypothesis_n))
   print(sprintf('Adjusted R2 = %.2f', R2))
+  print(sprintf('Expected effect size = %.2f', expected_effect_size))
   print(sprintf('Power = %.2f', retrodesign_out$power))
   print(sprintf('Type-S error rate = %.2f', retrodesign_out$typeS))
   print(sprintf('Exaggeration ratio = %.2f', retrodesign_out$exaggeration))
@@ -107,7 +123,7 @@ my_moran <- function(my_residuals,
   
   # Print results
   print(sprintf("Moran's Z = %.2f", moran_out$z.value))
-  print(sprintf("Moran's p = %.3f", moran_out$p.value))
+  print(sprintf("Moran's p = %.2e", moran_out$p.value))
 }
 
 ############################################

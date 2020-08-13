@@ -20,8 +20,8 @@ contemporary_country_controls = " + ln_income_m + ln_income2m"
 controls = 
   " + factor(statefip)"         %+%
   individual_controls           %+%
-  historical_country_controls   #%+%
-  #contemporary_country_controls
+  historical_country_controls   %+%
+  contemporary_country_controls
 
 clusters = "mbpl"
 
@@ -33,9 +33,11 @@ my_data <- my_data[complete.cases(pull(my_data, exposure)),]
 gaz_counties_national <- read.delim("datasets/2019_Gaz_counties_national.txt")
 
 gaz_counties_national$statefip <- floor(gaz_counties_national$GEOID/1000)
-gaz_counties_national <- gaz_counties_national %>% select(c(statefip, INTPTLAT, INTPTLONG))
-gaz_counties_national <- aggregate(gaz_counties_national, by=list(gaz_counties_national$statefip), FUN=mean)
-my_data <- merge(x=my_data, y=gaz_counties_national, by.x="statefip", by.y="statefip", all.x=TRUE)
+gaz_counties_national <- gaz_counties_national %>% 
+  select(c(statefip, INTPTLAT, INTPTLONG)) %>%
+  aggregate(by=list(gaz_counties_national$statefip), FUN=mean)
+my_data <- merge(x=my_data, y=gaz_counties_national, 
+                 by.x="statefip", by.y="statefip", all.x=TRUE)
 
 # Run regression
 f = outcome %+% " ~ " %+% exposure %+% controls %+% " | 0 | 0 | " %+% clusters 
@@ -46,7 +48,7 @@ my_summary(
   outcome, 
   exposure, 
   clusters, 
-  expected_effect_size = 0.03, 
+  expected_effect_size = 0.069, 
   n_hypothesis = 5)
 
 # Compute spatial autocorrelation statistics

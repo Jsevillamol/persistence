@@ -48,7 +48,8 @@ my_summary(my_felm,
            outcome, 
            exposure, 
            cluster, 
-           expected_effect_size = 0.13
+           expected_effect_size = 0.13,
+           n_hypothesis = 4
            )
 
 ## Compute spatial autocorrelation of residuals

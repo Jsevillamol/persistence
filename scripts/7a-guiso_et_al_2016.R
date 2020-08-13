@@ -12,7 +12,7 @@ source("scripts/my_utils.R")
 
 # Variable selection ------------------------------------------------------
 
-outcome = "cheating_mat_area_rap" # totassoc_p sede_aido cheating_mat_area_rap gold_medal
+outcome = "gold_medal" # totassoc_p sede_aido cheating_mat_area_rap gold_medal
 exposure = "libero_comune_allnord" # libero_comune_allnord libero_comune_principale signoria_indipendente_allnord 
 
 controls = 
@@ -35,7 +35,9 @@ my_data <- merge(my_data, istat_codes, by.x="istcom", by.y = "Codice.Comune.form
 ## Add coordinates of municipalities
 coordinate_data <- read.csv("datasets/7_guiso_et_al_data/places.csv") 
 coordinate_data <- coordinate_data %>% select(c(X,Y,name))
-my_data <- merge(my_data, coordinate_data, by.x="Denominazione.in.italiano", by.y="name")
+my_data <- merge(my_data, coordinate_data, 
+                 by.x="Denominazione.in.italiano", by.y="name",
+                 all.x = TRUE)
 
 ## Exclude Roma, region 20 and towns with no nonprofits
 my_data <- my_data %>% filter(dummyroma == 0) %>% 
@@ -52,7 +54,8 @@ my_summary(my_lm,
            outcome, 
            exposure, 
            #cluster, 
-           expected_effect_size = 0.1
+           expected_effect_size = 0.1,
+           n_hypothesis = 5
 )
 
 ## Compute spatial autocorrelation of residuals

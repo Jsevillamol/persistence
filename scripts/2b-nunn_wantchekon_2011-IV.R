@@ -7,7 +7,7 @@ source('scripts/my_utils.R')
 ## List of target outcomes:
 ## trust_relatives trust_neighbors trust_local_council 
 ## intra_group_trust inter_group_trust 
-outcome = "trust_relatives"
+outcome = "trust_neighbors"
 exposure = "ln_export_area"
 instrument = "distsea"
 

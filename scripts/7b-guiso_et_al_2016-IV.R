@@ -36,7 +36,9 @@ my_data <- merge(my_data, istat_codes, by.x="istcom", by.y = "Codice.Comune.form
 ## Add coordinates of municipalities
 coordinate_data <- read.csv("datasets/7_guiso_et_al_data/places.csv") 
 coordinate_data <- coordinate_data %>% select(c(X,Y,name))
-my_data <- merge(my_data, coordinate_data, by.x="Denominazione.in.italiano", by.y="name")
+my_data <- merge(my_data, coordinate_data, 
+                 by.x="Denominazione.in.italiano", by.y="name",
+                 all.x=TRUE)
 
 ## Exclude Roma, region 20 and towns with no nonprofits
 my_data <- my_data %>% filter(dummyroma == 0) %>% 
@@ -57,7 +59,7 @@ my_summary(my_lm,
            outcome, 
            "exposure.hat",
            expected_effect_size = 0.1,
-           n_hypothesis = 4
+           n_hypothesis = 5
 )
 
 print("First stage F-value = " %+% summary(first_stage)$fstatistic["value"])

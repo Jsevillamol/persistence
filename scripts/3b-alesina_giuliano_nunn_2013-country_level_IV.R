@@ -5,7 +5,7 @@ library(dplyr)
 source('scripts/my_utils.R')
 
 # Choose variable to run code on and controls
-outcome = "flfp2000" ## flfp2000 female_ownership women_politics
+outcome = "female_ownership" ## flfp2000 female_ownership women_politics
 exposure = "plow"
 
 continent_fixed_effects = " + factor(continent)"
@@ -39,7 +39,7 @@ additional_contemporary_controls =
 controls = 
   continent_fixed_effects          %+% 
   historical_controls              %+%
-#  contemporary_controls            %+% 
+# contemporary_controls            %+% 
   additional_historical_controls   %+%
   additional_contemporary_controls 
 
@@ -51,8 +51,8 @@ my_data <- read_dta("datasets/3_alesina_et_al_2013_data/crosscountry_dataset.dta
 country_centroids <- read.csv("datasets/country_centroids_az8.csv")
 keeps <- c("iso_a3", "Longitude", "Latitude")
 country_centroids <- country_centroids[keeps]
-my_data <- merge(x = my_data, y = country_centroids, by.x = "isocode", by.y = "iso_a3")#, all.x=TRUE)
-### Caution: The previous line drops some observations
+my_data <- merge(x = my_data, y = country_centroids, 
+                 by.x = "isocode", by.y = "iso_a3", all.x=TRUE)
 
 # Run 2SLS
 f1 = exposure %+% " ~ plow_positive_crops + plow_negative_crops" %+% controls
@@ -67,7 +67,7 @@ my_summary(
   my_lm,
   outcome, 
   "exposure.hat", 
-  expected_effect_size = 0.1,
+  expected_effect_size = 0.069,
   n_hypothesis = 5
 )
 

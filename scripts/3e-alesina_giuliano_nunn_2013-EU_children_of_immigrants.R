@@ -22,8 +22,8 @@ contemporary_country_controls = " + ln_income + ln_income2"
   
 controls = 
   individual_controls           %+%
-  historical_country_controls   %+%
-  contemporary_country_controls
+  historical_country_controls   #%+%
+  #contemporary_country_controls
 
 clusters = "mother_isocode_3digits"
 
@@ -35,7 +35,9 @@ my_data <- my_data[complete.cases(pull(my_data, exposure)),]
 country_centroids <- read.csv("datasets/country_centroids_az8.csv")
 keeps <- c("iso_a3", "Longitude", "Latitude")
 country_centroids <- country_centroids[keeps]
-my_data <- merge(x = my_data, y = country_centroids, by.x = "mother_isocode_3digits", by.y = "iso_a3")#, all.x=TRUE)
+my_data <- merge(x = my_data, y = country_centroids, 
+                 by.x = "mother_isocode_3digits", by.y = "iso_a3", 
+                 all.x=TRUE)
 
 # Run regression
 f = outcome %+% " ~ " %+% exposure %+% controls %+% " | 0 | 0 | " %+% clusters 
@@ -45,7 +47,8 @@ my_summary(
   outcome, 
   exposure, 
   clusters, 
-  expected_effect_size = 0.03)
+  expected_effect_size = 0.069,
+  n_hypothesis = 5)
 
 # Compute spatial autocorrelation statistics
 f = outcome %+% " ~ " %+% exposure %+% controls

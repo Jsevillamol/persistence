@@ -51,8 +51,8 @@ my_data <- read_dta("datasets/3_alesina_et_al_2013_data/crosscountry_dataset.dta
 country_centroids <- read.csv("datasets/country_centroids_az8.csv")
 keeps <- c("iso_a3", "Longitude", "Latitude")
 country_centroids <- country_centroids[keeps]
-my_data <- merge(x = my_data, y = country_centroids, by.x = "isocode", by.y = "iso_a3")#, all.x=TRUE)
-### Caution: The previous line drops some observations
+my_data <- merge(x = my_data, y = country_centroids, 
+                 by.x = "isocode", by.y = "iso_a3", all.x=TRUE)
 
 # Run OLS
 f = outcome %+% " ~ " %+% exposure %+% controls
@@ -63,7 +63,7 @@ my_summary(
   my_lm,
   outcome, 
   exposure, 
-  expected_effect_size = 0.1,
+  expected_effect_size = 0.069,
   n_hypothesis = 5
 )
 

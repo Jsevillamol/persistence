@@ -35,7 +35,7 @@ my_data <- read_dta("datasets/1_nunn_2008_data/slave_trade_QJE.dta")
 ## Add latitude and longitude
 country_centroids <- read.csv("datasets/country_centroids_az8.csv")
 country_centroids <- country_centroids %>% select(c(iso_a3,Latitude, Longitude))
-my_data <- merge(my_data, country_centroids, by.x = "isocode", by.y = "iso_a3")
+my_data <- merge(my_data, country_centroids, by.x = "isocode", by.y = "iso_a3", all.x=TRUE)
 
 # Compute regression
 f1 = exposure %+% " ~ " %+% instruments %+% controls
