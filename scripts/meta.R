@@ -7,12 +7,9 @@ library(dplyr)
 # Fetch data
 data <- read.csv("datasets/results.csv")
 
-# Reverse negative correlations
-data$Identified.persistent.correlation.abs<-data$Identified.persistent.correlation %>% abs()
-
 # Correlation effect size pooling
-m.hksj <- metagen(data$Identified.persistent.correlation.abs,
-                  data$Standard.error,
+m.hksj <- metagen(abs(data$Identified.persistent.correlation),
+                  data$Correlation.standard.error,
                   comb.fixed = FALSE,
                   comb.random = TRUE,
                   #method.tau = "SJ",
@@ -23,8 +20,12 @@ m.hksj <- metagen(data$Identified.persistent.correlation.abs,
 print(sprintf("Pooled correlation effect size = %.2f (%.2f)", m.hksj$TE.random, m.hksj$seTE.predict))
 
 # Causal effect size pooling
-m.hksj <- metagen(data$Identified.persistent.correlation.abs,
-                  data$Standard.error,
+data$Identified.persistent.causation <- data$Identified.persistent.causation %>% as.numeric()
+data$Causation.standard.error <- data$Causation.standard.error %>% as.numeric()
+mask <- !is.na(data$Causation.standard.error)
+data <- data %>% subset(mask)
+m.hksj <- metagen(abs(data$Identified.persistent.causation),
+                  data$Causation.standard.error,
                   comb.fixed = FALSE,
                   comb.random = TRUE,
                   #method.tau = "SJ",
@@ -32,4 +33,4 @@ m.hksj <- metagen(data$Identified.persistent.correlation.abs,
                   prediction = TRUE,
                   sm = "MD"
 )
-print(sprintf("Pooled correlation effect size = %.2f (%.2f)", m.hksj$TE.random, m.hksj$seTE.predict))
+print(sprintf("Pooled causation effect size = %.2f (%.2f)", m.hksj$TE.random, m.hksj$seTE.predict))
