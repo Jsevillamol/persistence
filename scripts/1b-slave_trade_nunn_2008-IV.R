@@ -24,7 +24,7 @@ precolonial_prosperity_controls=
   " + ln_avg_gold_pop + ln_avg_oil_pop + ln_avg_all_diamonds_pop" %+%
   " + ln_pop_dens_1400"
 
-controls =
+controls = 
   colony_fixed_effects  %+%
   geographical_controls %+%
   precolonial_prosperity_controls

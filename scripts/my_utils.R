@@ -40,7 +40,7 @@ my_summary <- function(
   }
   
   # Standardize regression coefficient
-  sigma_x <- my_lm$model %>% pull(exposure) %>% sd()
+  sigma_x <- my_lm$model %>% pull(exposure) %>% sd() # Need to fix this for 2SLS
   sigma_y <- my_lm$model %>% pull(outcome) %>% sd()
   
   cohen_d <- r / sigma_y
@@ -52,7 +52,7 @@ my_summary <- function(
   # Apply Sidak MHT correction
   ## Compute critical number of hypothesis
   if(p < significance_level){
-    critical_hypothesis_n <- floor(log(1 - significance_level) / log(1-p))
+    critical_hypothesis_n <- ceiling(log(1 - significance_level) / log(1-p))
   } else {
     critical_hypothesis_n <- 0
   }
@@ -60,10 +60,10 @@ my_summary <- function(
   ## Adjust p value
   p.adj <- 1-(1-p)^n_hypothesis
   
-  ## Adjust standard error 
-  alpha <- erf(1/ sqrt(2))
-  alpha.p <- 1-(1-alpha)^n_hypothesis
-  s_adjusted <- s_standard * (sqrt(2) * erfinv(alpha.p))
+  ## Adjust standard error
+  alpha.p <- erf(1/ sqrt(2))
+  alpha <- alpha.p^(1/n_hypothesis)
+  s_adjusted <- s_standard * qnorm((1+alpha)/2)
   
   # Compute power, type-S error ratio and exaggeration ratio
   retrodesign_out <- retrodesign(
@@ -78,8 +78,8 @@ my_summary <- function(
   if (clusters != ""){print(sprintf('n clusters = %d', n_clusters))}
   print(sprintf('r = %.2f (%.2f)', r, s))
   print(sprintf('d = %.2f (%.2f)', cohen_d, cohen_ds))
-  print(sprintf('beta = %.2f (%.2f) [%.2f]', beta, s_standard, s_adjusted))
-  print(sprintf('p = %.2e', p))
+  print(sprintf('beta = %.2f (%.2f) [%.2f], adjusted p = %.2e', beta, s_standard, s_adjusted, p.adj))
+  print(sprintf('unadjusted p = %.2e', p))
   print(sprintf('# hypotheses tested = %i', n_hypothesis))
   print(sprintf('Adjusted p = %.2e', p.adj))
   print(sprintf('Critical hypothesis number = %.2e', critical_hypothesis_n))

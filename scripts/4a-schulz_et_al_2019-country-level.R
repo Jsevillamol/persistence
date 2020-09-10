@@ -18,7 +18,8 @@ my_summary(
   my_lm, 
   outcome, 
   exposure,
-  n_hypothesis = 3)
+  n_hypothesis = 3,
+  expected_effect_size = 0.27)
 
 # Compute Moran
 my_moran(

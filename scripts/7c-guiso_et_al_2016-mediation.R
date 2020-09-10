@@ -4,10 +4,10 @@
 # Libraries ---------------------------------------------------------------
 
 library(haven)
-library(lfe)
+library(lfe)l 
 library(dplyr)
 library(tidyr)
-source("scripts/my_utils.R") 
+source("scripts/my_utils.R")
 
 # Variable selection ------------------------------------------------------
 
