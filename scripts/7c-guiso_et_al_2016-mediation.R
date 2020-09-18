@@ -4,7 +4,7 @@
 # Libraries ---------------------------------------------------------------
 
 library(haven)
-library(lfe)l 
+library(lfe)
 library(dplyr)
 library(tidyr)
 source("scripts/my_utils.R")
@@ -28,8 +28,6 @@ my_data <- read_dta("datasets/7_guiso_et_al_data/ltp1F.dta")
 n <- nrow(my_data)
 self_efficacy_data <- read_dta("datasets/7_guiso_et_al_data/ltp3F.dta")
 my_data <- merge(my_data, self_efficacy_data)
-print(nrow(my_data) - n) # Why are some extra rows added?
-
 
 ## Add names of municipalities
 istat_codes <- read.csv("~/R/persistence/datasets/7_guiso_et_al_data/Codici-statistici-e-denominazioni-al-01_07_2020 (1).csv", sep=";")

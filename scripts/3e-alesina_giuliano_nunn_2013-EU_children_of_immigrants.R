@@ -23,7 +23,7 @@ contemporary_country_controls = " + ln_income + ln_income2"
 controls = 
   individual_controls           %+%
   historical_country_controls   #%+%
-  #contemporary_country_controls
+#  contemporary_country_controls
 
 clusters = "mother_isocode_3digits"
 

@@ -46,7 +46,7 @@ alpha.p <- 1-(1-alpha)^n_hypotheses_tested
 s_adjusted <- s_standard * (sqrt(2) * erfinv(alpha.p))
 
 # Post design power analysis
-expected_effect_size = 0.10
+expected_effect_size = 0.28
 retrodesign_out <- retrodesign(
   expected_effect_size, 
   s_adjusted,

@@ -39,7 +39,7 @@ additional_contemporary_controls =
 controls = 
   continent_fixed_effects          %+% 
   historical_controls              %+%
-#  contemporary_controls            %+% 
+# contemporary_controls            %+% 
   additional_historical_controls   %+%
   additional_contemporary_controls 
 

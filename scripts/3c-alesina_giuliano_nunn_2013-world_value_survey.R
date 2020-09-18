@@ -3,10 +3,10 @@ library(dplyr)
 source('scripts/my_utils.R')
 
 # Choose outcome and controls
-outcome = "jobs_scarce" # FLFP15_64 jobs_scarce men_pol_leaders
+outcome = "FLFP15_64" # FLFP15_64 jobs_scarce men_pol_leaders
 exposure = "plow"
 
-fixed_effects = "+ factor(regioncode) + factor(countrycode) + factor(countrycode)" ## regioncode countrycode continent
+fixed_effects = "+ factor(regioncode) + factor(countrycode)" ## regioncode countrycode continent
 individual_controls = " + age + age_sq + primary + secondary + married" %+%
   ifelse(outcome == "FLFP15_64", "", " + factor(sex)")
 historical_district_controls = 
@@ -17,7 +17,7 @@ controls =
   fixed_effects %+%
   individual_controls %+%
   historical_district_controls #%+%
-  #contemporary_country_controls
+#  contemporary_country_controls
   
 # Prepare data
 my_data <- read_dta("datasets/3_alesina_et_al_2013_data/WVS_dataset.dta")
